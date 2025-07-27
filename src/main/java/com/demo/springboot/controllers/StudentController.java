@@ -1,10 +1,16 @@
 package com.demo.springboot.controllers;
 
+import com.demo.springboot.dto.StudentRequest;
+import com.demo.springboot.dto.StudentResponse;
 import com.demo.springboot.entity.Student;
 import com.demo.springboot.service.StudentService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -18,7 +24,7 @@ public class StudentController {
     }
 
     @GetMapping
-    public List<Student> getStudents() {
+    public List<StudentResponse> getStudents() {
         return studentService.findAll();
     }
 
@@ -41,8 +47,8 @@ public class StudentController {
     }
 
     @PostMapping
-    public Student addStudent(@RequestBody Student student) {
-        return studentService.save(student);
+    public Student addStudent(@Valid @RequestBody StudentRequest studentDto) {
+        return studentService.save(studentDto);
     }
 
     @PutMapping
@@ -53,6 +59,20 @@ public class StudentController {
     @DeleteMapping
     public String deleteStudent(@RequestBody Student student) {
         return studentService.delete(student);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<?> handleNotValidStudentRequest(
+            MethodArgumentNotValidException exp
+    ) {
+        var errors = new HashMap<String, String>();
+        exp.getBindingResult().getAllErrors().forEach(error -> {
+            var fieldName = ((FieldError) error).getField();
+            var errorMessage = error.getDefaultMessage();
+
+            errors.put(fieldName, errorMessage);
+        });
+        return ResponseEntity.badRequest().body(errors);
     }
 
 }

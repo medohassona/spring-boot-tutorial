@@ -1,13 +1,15 @@
 package com.demo.springboot.service;
 
+import com.demo.springboot.dto.StudentRequest;
+import com.demo.springboot.dto.StudentResponse;
 import com.demo.springboot.entity.Student;
 
 import java.util.List;
 
 public interface StudentService {
-    List<Student> findAll();
+    List<StudentResponse> findAll();
 
-    Student save(Student student);
+    Student save(StudentRequest student);
 
     String delete(Student student);
 

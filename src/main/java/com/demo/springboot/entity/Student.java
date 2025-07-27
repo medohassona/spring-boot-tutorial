@@ -1,5 +1,6 @@
 package com.demo.springboot.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -17,6 +18,11 @@ public class Student {
     private Integer age;
     @OneToOne(mappedBy = "student", cascade = CascadeType.ALL)
     private StudentProfile studentProfile;
+
+    @ManyToOne
+    @JoinColumn(name = "school_id")
+    @JsonBackReference
+    private School school;
 
     public Long getId() {
         return id;
@@ -68,5 +74,13 @@ public class Student {
 
     public void setStudentProfile(StudentProfile studentProfile) {
         this.studentProfile = studentProfile;
+    }
+
+    public School getSchool() {
+        return school;
+    }
+
+    public void setSchool(School school) {
+        this.school = school;
     }
 }

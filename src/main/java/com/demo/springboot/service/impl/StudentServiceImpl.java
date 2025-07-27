@@ -1,6 +1,9 @@
 package com.demo.springboot.service.impl;
 
+import com.demo.springboot.dto.StudentRequest;
+import com.demo.springboot.dto.StudentResponse;
 import com.demo.springboot.entity.Student;
+import com.demo.springboot.mapper.StudentMapper;
 import com.demo.springboot.repository.StudentRepository;
 import com.demo.springboot.service.StudentService;
 import org.springframework.stereotype.Service;
@@ -11,20 +14,24 @@ import java.util.List;
 public class StudentServiceImpl implements StudentService {
 
     private final StudentRepository studentRepository;
+    private final StudentMapper studentMapper;
 
-    public StudentServiceImpl(StudentRepository studentRepository) {
+    public StudentServiceImpl(StudentRepository studentRepository, StudentMapper studentMapper) {
         this.studentRepository = studentRepository;
 
+        this.studentMapper = studentMapper;
     }
 
     @Override
-    public List<Student> findAll() {
-        return studentRepository.findAll();
+    public List<StudentResponse> findAll() {
+        return studentRepository.findAll().stream()
+                .map(studentMapper::toStudentResponse)
+                .toList();
     }
 
     @Override
-    public Student save(Student student) {
-        return studentRepository.save(student);
+    public Student save(StudentRequest studentDto) {
+        return studentRepository.save(studentMapper.toStudent(studentDto));
     }
 
     @Override
