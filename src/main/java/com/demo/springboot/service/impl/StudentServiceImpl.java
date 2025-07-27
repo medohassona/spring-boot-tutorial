@@ -31,6 +31,9 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Student save(StudentRequest studentDto) {
+        //  is there already any student with the same email exist in the database ?
+        //  yes => throw EmailAlreadyExistException
+        // no => create the student
         return studentRepository.save(studentMapper.toStudent(studentDto));
     }
 
