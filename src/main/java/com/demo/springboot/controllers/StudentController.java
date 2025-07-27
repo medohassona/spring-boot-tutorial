@@ -31,6 +31,15 @@ public class StudentController {
         return ResponseEntity.ok(student);
     }
 
+    @GetMapping("/email")
+    public ResponseEntity<Student> getStudentByEmail(@RequestParam  String email) {
+        Student student = studentService.findByEmail(email);
+        if (student == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(student);
+    }
+
     @PostMapping
     public Student addStudent(@RequestBody Student student) {
         return studentService.save(student);
